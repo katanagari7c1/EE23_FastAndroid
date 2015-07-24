@@ -4,8 +4,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.qozix.tileview.TileView;
+import com.qozix.tileview.markers.MarkerEventListener;
 import com.software.shell.fab.ActionButton;
 
 
@@ -18,12 +20,27 @@ public class Main extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tileView = (TileView)findViewById(R.id.tile_view);
-        tileView.setSize(2048,1280);
-        tileView.addDetailLevel(1.0f, "tiles/partyplace/1000/%row%_%col%.png");
-        //tileView.setScale(0.5);
+        tileView.setCacheEnabled(false);
+        tileView.setSize(2400,1800);
+        tileView.addDetailLevel(1.0f, "tiles/partyplace/1000/%row%_%col%.png", "samples/partyplace.png", 600, 600);
+
+        tileView.setScaleLimits(0, 2);
+        tileView.setScale(0.5);
 
         setupFAB();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        tileView.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tileView.destroy();
     }
 
     private void setupFAB() {
