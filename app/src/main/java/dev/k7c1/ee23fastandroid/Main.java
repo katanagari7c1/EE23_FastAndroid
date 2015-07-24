@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.qozix.tileview.TileView;
+import com.software.shell.fab.ActionButton;
 
 
 public class Main extends ActionBarActivity {
@@ -21,6 +22,16 @@ public class Main extends ActionBarActivity {
         tileView.addDetailLevel(1.0f, "tiles/partyplace/1000/%row%_%col%.png");
         //tileView.setScale(0.5);
 
+        setupFAB();
+
+    }
+
+    private void setupFAB() {
+        ActionButton fab = (ActionButton) findViewById(R.id.action_button);
+        fab.setType(ActionButton.Type.DEFAULT);
+        fab.setButtonColor(getResources().getColor(R.color.orange));
+        fab.setButtonColorPressed(getResources().getColor(R.color.orange_dark));
+        fab.setImageResource(R.drawable.ic_pin_drop_white_24dp);
     }
 
     @Override
