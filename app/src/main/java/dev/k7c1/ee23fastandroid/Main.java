@@ -1,18 +1,26 @@
 package dev.k7c1.ee23fastandroid;
 
-import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.qozix.tileview.TileView;
+
 
 public class Main extends ActionBarActivity {
+
+    private TileView tileView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tileView = (TileView)findViewById(R.id.tile_view);
+        tileView.setSize(2048,1280);
+        tileView.addDetailLevel(1.0f, "tiles/partyplace/1000/%row%_%col%.png");
+        //tileView.setScale(0.5);
+
     }
 
     @Override
