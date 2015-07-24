@@ -53,9 +53,7 @@ public class Main extends ActionBarActivity {
             @Override
             public void onTap(int i, int i1) {
                 if (savePointMode) {
-                    Log.d("", "Taping in " + i + "x" + i1);
-                    fab.show();
-                    fab.playShowAnimation();
+                    showFab();
                     placeMarker(R.drawable.mark, i, i1);
                 }
 
@@ -129,6 +127,12 @@ public class Main extends ActionBarActivity {
 
     }
 
+    private void showFab() {
+        fab.show();
+        fab.playShowAnimation();
+        savePointMode = false;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -168,10 +172,9 @@ public class Main extends ActionBarActivity {
 
     private void placeMarker( int resId, double x, double y ) {
         ImageView imageView = new ImageView( this );
-        imageView.setImageResource( resId );
+        imageView.setImageResource(resId);
         double scale = tileView.getScale();
         tileView.addMarker(imageView, x/scale, y/scale);
-        savePointMode = false;
     }
 
     @Override
@@ -194,5 +197,15 @@ public class Main extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (savePointMode) {
+            showFab();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 }
