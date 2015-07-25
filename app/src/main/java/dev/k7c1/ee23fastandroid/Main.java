@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.nhaarman.supertooltips.ToolTip;
+import com.nhaarman.supertooltips.ToolTipRelativeLayout;
+import com.nhaarman.supertooltips.ToolTipView;
 import com.qozix.tileview.TileView;
 import com.qozix.tileview.markers.MarkerEventListener;
 import com.software.shell.fab.ActionButton;
@@ -22,12 +25,14 @@ import java.util.Collection;
 
 public class Main extends ActionBarActivity {
 
+    private ToolTipRelativeLayout tooltipLayout;
     private TileView tileView;
     private ActionButton fab;
     private boolean savePointMode = false;
 
     private Collection<Marker> markers;
     private Marker tmpMarker = null;
+    private ToolTipView shownTooltip = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,16 @@ public class Main extends ActionBarActivity {
         this.markers = new ArrayList<>();
 
         setContentView(R.layout.activity_main);
+
         tileView = (TileView)findViewById(R.id.tile_view);
+        tooltipLayout = (ToolTipRelativeLayout)findViewById(R.id.tooltip_layout);
+
+        initializeTileView();
+        setupFAB();
+
+    }
+
+    private void initializeTileView() {
         tileView.setCacheEnabled(false);
         tileView.setSize(2400, 1800);
         tileView.addDetailLevel(1.0f, "tiles/partyplace/1000/%row%_%col%.png", "samples/partyplace.png", 600, 600);
@@ -44,22 +58,18 @@ public class Main extends ActionBarActivity {
         tileView.addTileViewEventListener(new TileView.TileViewEventListener() {
             @Override
             public void onFingerDown(int i, int i1) {
-
             }
 
             @Override
             public void onFingerUp(int i, int i1) {
-
             }
 
             @Override
             public void onDrag(int i, int i1) {
-
             }
 
             @Override
             public void onDoubleTap(int i, int i1) {
-
             }
 
             @Override
@@ -75,70 +85,89 @@ public class Main extends ActionBarActivity {
 
             @Override
             public void onPinch(int i, int i1) {
-
             }
 
             @Override
             public void onPinchStart(int i, int i1) {
-
             }
 
             @Override
             public void onPinchComplete(int i, int i1) {
-
             }
 
             @Override
             public void onFling(int i, int i1, int i2, int i3) {
-
             }
 
             @Override
             public void onFlingComplete(int i, int i1) {
-
             }
 
             @Override
             public void onScaleChanged(double v) {
-
             }
 
             @Override
             public void onScrollChanged(int i, int i1) {
-
+                if (shownTooltip != null) {
+                    shownTooltip.remove();
+                }
             }
 
             @Override
             public void onZoomStart(double v) {
-
             }
 
             @Override
             public void onZoomComplete(double v) {
-
             }
 
             @Override
             public void onDetailLevelChanged() {
-
             }
 
             @Override
             public void onRenderStart() {
-
             }
 
             @Override
             public void onRenderComplete() {
+            }
+        });
 
+        tileView.addMarkerEventListener(new MarkerEventListener() {
+            @Override
+            public void onMarkerTap(View view, int i, int i1) {
+                if (shownTooltip != null) {
+                    shownTooltip.remove();
+                }
+
+                Marker marker = findMarkerFromView(view);
+
+                if (marker != null) {
+                    ToolTip tooltip = new ToolTip()
+                            .withText(marker.name)
+                            .withColor(getResources().getColor(R.color.white))
+                            .withAnimationType(ToolTip.AnimationType.FROM_TOP)
+                            .withShadow();
+
+                    shownTooltip = tooltipLayout.showToolTipForView(tooltip, view);
+                }
             }
         });
 
         tileView.setScaleLimits(0, 2);
         tileView.setScale(0.5);
+    }
 
-        setupFAB();
+    private Marker findMarkerFromView(View view) {
+        for (Marker marker : this.markers) {
+            if (marker.view.equals(view)) {
+                return marker;
+            }
+        }
 
+        return null;
     }
 
     private void showInsertNameDialog() {

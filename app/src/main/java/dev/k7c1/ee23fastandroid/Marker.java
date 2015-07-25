@@ -1,17 +1,16 @@
 package dev.k7c1.ee23fastandroid;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.qozix.tileview.TileView;
 
-/**
- * Created by katanagari7c1 on 25/07/15.
- */
 public class Marker {
 
     public double x, y;
     public String name;
+    public View view;
 
     public void insert(TileView tileView) {
         Context context = tileView.getContext();
@@ -22,7 +21,7 @@ public class Marker {
         ImageView imageView = new ImageView(context);
         imageView.setImageResource(resId);
         double scale = tileView.getScale();
-        tileView.addMarker(imageView, x/scale, y/scale);
+        this.view = tileView.addMarker(imageView, x/scale, y/scale);
     }
 
 }
