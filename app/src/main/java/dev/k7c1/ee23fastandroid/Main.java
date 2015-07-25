@@ -57,6 +57,8 @@ public class Main extends ActionBarActivity {
         for(Marker marker : markers) {
             marker.insert(tileView);
         }
+
+        setDefaultPlaces();
     }
 
     private void initializeTileView() {
@@ -167,6 +169,25 @@ public class Main extends ActionBarActivity {
 
         tileView.setScaleLimits(0, 2);
         tileView.setScale(0.7475);
+    }
+
+    private void setDefaultPlaces() {
+        insertDefaultPlace("Baños", 500.0 , 1026.0);
+        insertDefaultPlace("Escaleras", 980.0 , 1010.0);
+        insertDefaultPlace("Sobódromo", 1570.0, 1010.0);
+        insertDefaultPlace("Pizza!", 1660.0, 105.0);
+        insertDefaultPlace("Comedor", 1500.0, 220.0);
+        insertDefaultPlace("Pantalla principal", 899.0, 103.0);
+        insertDefaultPlace("Punto de reciclaje", 1710.0, 560.0);
+    }
+
+    private void insertDefaultPlace(String name, double x, double y) {
+        Marker m = new Marker();
+        m.x = x;
+        m.y = y;
+        m.name = name;
+        m.insertWithInfoIcon(tileView);
+        markers.add(m);
     }
 
     private Marker findMarkerFromView(View view) {
