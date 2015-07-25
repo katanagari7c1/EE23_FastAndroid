@@ -1,17 +1,23 @@
 package dev.k7c1.ee23fastandroid;
 
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.qozix.tileview.TileView;
 import com.qozix.tileview.markers.MarkerEventListener;
 import com.software.shell.fab.ActionButton;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 public class Main extends ActionBarActivity {
@@ -20,9 +26,15 @@ public class Main extends ActionBarActivity {
     private ActionButton fab;
     private boolean savePointMode = false;
 
+    private Collection<Marker> markers;
+    private Marker tmpMarker = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.markers = new ArrayList<>();
+
         setContentView(R.layout.activity_main);
         tileView = (TileView)findViewById(R.id.tile_view);
         tileView.setCacheEnabled(false);
@@ -53,8 +65,10 @@ public class Main extends ActionBarActivity {
             @Override
             public void onTap(int i, int i1) {
                 if (savePointMode) {
-                    showFab();
-                    placeMarker(R.drawable.mark, i, i1);
+                    tmpMarker = new Marker();
+                    tmpMarker.x = i;
+                    tmpMarker.y = i1;
+                    showInsertNameDialog();
                 }
 
             }
@@ -127,6 +141,37 @@ public class Main extends ActionBarActivity {
 
     }
 
+    private void showInsertNameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("¿cómo lo vas a llamar?");
+
+        final EditText input = new EditText(this);
+
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showFab();
+                tmpMarker.name = input.getText().toString();
+                tmpMarker.insert(tileView);
+
+                markers.add(tmpMarker);
+                tmpMarker = null;
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showFab();
+                tmpMarker = null;
+            }
+        });
+
+        builder.show();
+    }
+
     private void showFab() {
         fab.show();
         fab.playShowAnimation();
@@ -168,35 +213,6 @@ public class Main extends ActionBarActivity {
     private void setSavePointMode() {
         savePointMode = true;
         Toast.makeText(this, "Toca en donde quieras dejar la marca", Toast.LENGTH_SHORT).show();
-    }
-
-    private void placeMarker( int resId, double x, double y ) {
-        ImageView imageView = new ImageView( this );
-        imageView.setImageResource(resId);
-        double scale = tileView.getScale();
-        tileView.addMarker(imageView, x/scale, y/scale);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
