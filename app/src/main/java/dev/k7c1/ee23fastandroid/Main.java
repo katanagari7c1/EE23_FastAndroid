@@ -1,15 +1,11 @@
 package dev.k7c1.ee23fastandroid;
 
 import android.content.DialogInterface;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.nhaarman.supertooltips.ToolTip;
@@ -19,8 +15,9 @@ import com.qozix.tileview.TileView;
 import com.qozix.tileview.markers.MarkerEventListener;
 import com.software.shell.fab.ActionButton;
 
-import java.util.ArrayList;
 import java.util.Collection;
+
+import dev.k7c1.ee23fastandroid.model.MarkerDao;
 
 
 public class Main extends ActionBarActivity {
@@ -30,6 +27,7 @@ public class Main extends ActionBarActivity {
     private ActionButton fab;
     private boolean savePointMode = false;
 
+    private MarkerDao markerDao;
     private Collection<Marker> markers;
     private Marker tmpMarker = null;
     private ToolTipView shownTooltip = null;
@@ -38,8 +36,6 @@ public class Main extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.markers = new ArrayList<>();
-
         setContentView(R.layout.activity_main);
 
         tileView = (TileView)findViewById(R.id.tile_view);
@@ -47,7 +43,20 @@ public class Main extends ActionBarActivity {
 
         initializeTileView();
         setupFAB();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Initialize markers
+        tileView.clear();
+
+        this.markerDao = new MarkerDao(this);
+        this.markers = markerDao.getAllMarkers();
+
+        for(Marker marker : markers) {
+            marker.insert(tileView);
+        }
     }
 
     private void initializeTileView() {
@@ -157,7 +166,7 @@ public class Main extends ActionBarActivity {
         });
 
         tileView.setScaleLimits(0, 2);
-        tileView.setScale(0.5);
+        tileView.setScale(0.7475);
     }
 
     private Marker findMarkerFromView(View view) {
@@ -185,6 +194,7 @@ public class Main extends ActionBarActivity {
                 tmpMarker.name = input.getText().toString();
                 tmpMarker.insert(tileView);
 
+                markerDao.saveMarker(tmpMarker);
                 markers.add(tmpMarker);
                 tmpMarker = null;
             }

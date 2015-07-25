@@ -25,4 +25,5 @@ dependencies {
     compile files('libs/tileviewlib-1.0.15.jar')
     compile 'com.github.shell-software:fab:1.1.2'
     compile 'com.nhaarman.supertooltips:library:3.0.+'
+    compile 'io.realm:realm-android:0.81.1'
 }
